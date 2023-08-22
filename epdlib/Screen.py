@@ -322,6 +322,9 @@ class Screen():
         if epd == 'HD':
             self.HD = True
             myepd = self._load_hd(epd)
+        elif epd == 'pygame':
+            self.HD = False
+            myepd = self._load_pygame(epd)
         else:
             self.HD = False
             myepd = self._load_non_hd(epd)
@@ -442,7 +445,17 @@ class Screen():
                 'one_bit_display': one_bit_display,
                 'constants': constants_HD,
                 'mode': 'L'}    
+    
+    def _load_pygame(self, epd):
+        from .PygameSimulator import PygameSimulator
+        return {'epd': PygameSimulator([800,400]), 
+                'resolution': [800,400], 
+                'clear_args': {},
+                'one_bit_display': True,
+                'constants': None,
+                'mode': "1"}
         
+
     def _load_non_hd(self, epd):
         '''configure non IT8951 SPI epd
         
@@ -605,6 +618,10 @@ class Screen():
         if self.mirror:
             logging.debug('mirroring output')
             image = ImageOps.mirror(image)
+
+        if self.epd.__class__.__name__ == "PygameSimulator":
+            self.epd.display(image)
+            return
 
         write_function(image)
         if sleep==False:
