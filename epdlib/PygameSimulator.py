@@ -41,7 +41,7 @@ class PygameSimulator:
         self.screen.fill((255,255,255))
 
     def sleep(self):
-        pass
+        self.checkEventLoop()
 
     def checkEventLoop(self):
         for event in pygame.event.get():
